@@ -26,8 +26,20 @@ import sys
 
 from dotenv import load_dotenv
 
-# Load .env before any google imports so GOOGLE_API_KEY is available
+# Load .env before any google imports
 load_dotenv()
+
+# Support both new AQ. key format (GEMINI_API_KEY) and
+# legacy AIzaSy format (GOOGLE_API_KEY).
+# ADK 2.2+ reads GEMINI_API_KEY natively.
+# The google-genai client in tools also checks GOOGLE_API_KEY,
+# so we mirror whichever one is set.
+_gemini_key = os.environ.get("GEMINI_API_KEY", "")
+_google_key  = os.environ.get("GOOGLE_API_KEY", "")
+if _gemini_key and not _google_key:
+    os.environ["GOOGLE_API_KEY"] = _gemini_key   # mirror for google-genai client
+elif _google_key and not _gemini_key:
+    os.environ["GEMINI_API_KEY"] = _google_key   # mirror for ADK
 
 sys.path.insert(0, os.path.dirname(__file__))
 
