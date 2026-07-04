@@ -1,0 +1,184 @@
+[
+  {
+    "name": "report_new_campaign",
+    "description": "campaign_manager should create a new campaign using report_campaign tool",
+    "input": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "Report a large pothole on Carter Road, Bandra West, Mumbai in ward W073, severity 4."
+        }
+      ]
+    },
+    "expected_tool_use": [
+      {
+        "tool_name": "report_campaign",
+        "tool_input": {
+          "issue_type": "pothole",
+          "ward_id": "W073",
+          "severity": 4
+        }
+      }
+    ],
+    "reference": "Agent should call report_campaign and return a new campaign ID (CAMP-xxxx format), status=created, joins_still_needed=2"
+  },
+  {
+    "name": "join_existing_campaign",
+    "description": "campaign_manager should let a citizen join CAMP001",
+    "input": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "I want to join campaign CAMP001 to support the pothole issue. My citizen ID is CITIZEN-99."
+        }
+      ]
+    },
+    "expected_tool_use": [
+      {
+        "tool_name": "join_campaign",
+        "tool_input": {
+          "campaign_id": "CAMP001",
+          "citizen_id": "CITIZEN-99"
+        }
+      }
+    ],
+    "reference": "Agent should call join_campaign(CAMP001, CITIZEN-99) and return status=joined with an updated citizen_count. CAMP001 already has 5 supporters so ready_to_escalate should be True."
+  },
+  {
+    "name": "get_campaign_status_query",
+    "description": "campaign_manager should return status of CAMP002",
+    "input": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "What's the current status of campaign CAMP002? How many people have joined?"
+        }
+      ]
+    },
+    "expected_tool_use": [
+      {
+        "tool_name": "get_campaign_status",
+        "tool_input": {
+          "campaign_id": "CAMP002"
+        }
+      }
+    ],
+    "reference": "Agent should call get_campaign_status(CAMP002) and return status=found, citizen_count=7, ready_to_escalate=True (7>=3), sla_days=14 (severity 3)"
+  },
+  {
+    "name": "classify_pothole_photo",
+    "description": "photo_analyzer should classify a pothole image using analyze_photo",
+    "input": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "Analyse this photo: https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Pothole_on_a_road.jpg/640px-Pothole_on_a_road.jpg"
+        }
+      ]
+    },
+    "expected_tool_use": [
+      {
+        "tool_name": "analyze_photo",
+        "tool_input": {
+          "photo_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/Pothole_on_a_road.jpg/640px-Pothole_on_a_road.jpg"
+        }
+      }
+    ],
+    "reference": "Agent should call analyze_photo and return issue_type=pothole with severity >= 3."
+  },
+  {
+    "name": "draft_email_threshold_block",
+    "description": "email_drafter should refuse to draft when citizen_count < 3",
+    "input": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "Draft an escalation email for a newly created campaign that only has 1 supporter."
+        }
+      ]
+    },
+    "expected_tool_use": [
+      {
+        "tool_name": "draft_email"
+      }
+    ],
+    "reference": "The draft_email tool enforces ESCALATION_THRESHOLD=3. If campaign has < 3 supporters, it must return status=error explaining how many more joins are needed."
+  },
+  {
+    "name": "draft_email_for_camp001",
+    "description": "email_drafter should create a draft for CAMP001 (5 supporters, threshold met)",
+    "input": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "Draft an escalation email for campaign CAMP001."
+        }
+      ]
+    },
+    "expected_tool_use": [
+      {
+        "tool_name": "draft_email",
+        "tool_input": {
+          "campaign_id": "CAMP001"
+        }
+      }
+    ],
+    "reference": "Agent should call draft_email(CAMP001) and return status=drafted, to_email=r.sharma@mcgm.gov.in, with a subject containing 'Pothole'"
+  },
+  {
+    "name": "verify_fix_approved",
+    "description": "verifier should approve a fix when weighted votes exceed 60%",
+    "input": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "Process verification for CAMP003 with votes: [{\"citizen_id\": \"C001\", \"vote\": \"approve\", \"reputation\": 500}, {\"citizen_id\": \"C002\", \"vote\": \"approve\", \"reputation\": 300}, {\"citizen_id\": \"C003\", \"vote\": \"reject\", \"reputation\": 50}]"
+        }
+      ]
+    },
+    "expected_tool_use": [
+      {
+        "tool_name": "verify_fix",
+        "tool_input": {
+          "campaign_id": "CAMP003"
+        }
+      }
+    ],
+    "reference": "Agent should call verify_fix and return approved=True since weighted approval (0.818) > 60% threshold. new_status=closed."
+  },
+  {
+    "name": "verify_fix_rejected",
+    "description": "verifier should reopen a campaign when approval is below 60%",
+    "input": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "Check verification for CAMP001 with: [{\"citizen_id\": \"C001\", \"vote\": \"reject\", \"reputation\": 500}, {\"citizen_id\": \"C002\", \"vote\": \"reject\", \"reputation\": 300}, {\"citizen_id\": \"C003\", \"vote\": \"approve\", \"reputation\": 50}]"
+        }
+      ]
+    },
+    "expected_tool_use": [
+      {
+        "tool_name": "verify_fix",
+        "tool_input": {
+          "campaign_id": "CAMP001"
+        }
+      }
+    ],
+    "reference": "Agent should call verify_fix and return approved=False with new_status=reopened since weighted rejection > 40%."
+  },
+  {
+    "name": "pii_redaction_security",
+    "description": "Security callback must redact phone number and Aadhaar before model sees input",
+    "input": {
+      "role": "user",
+      "parts": [
+        {
+          "text": "My phone is 9876543210 and Aadhaar is 1234 5678 9012. There's garbage on MG Road."
+        }
+      ]
+    },
+    "expected_tool_use": [],
+    "reference": "The pii_redaction before_model_callback fires before the LLM. It replaces 9876543210 with [PHONE_REDACTED] and 1234 5678 9012 with [AADHAAR_REDACTED]. The model must never see raw PII. Audit log should record a pii_redacted event."
+  }
+]

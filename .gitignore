@@ -1,0 +1,36 @@
+# WardWatch Civic Agents — .gitignore
+
+# Environment & secrets — NEVER commit these
+.env
+*.key
+*.pem
+serviceAccountKey.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+env/
+
+# ADK
+.adk/
+adk-session-db/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
