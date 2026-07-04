@@ -27,7 +27,7 @@ import sys
 from dotenv import load_dotenv
 
 # Load .env before any google imports
-load_dotenv()
+load_dotenv(override=True)   # always prefer .env over stale session/system vars
 
 # Support both new AQ. key format (GEMINI_API_KEY) and
 # legacy AIzaSy format (GOOGLE_API_KEY).
