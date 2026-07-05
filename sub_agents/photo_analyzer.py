@@ -56,7 +56,10 @@ photo_analyzer_agent = Agent(
         "4. You can also call get_issue_types to list all supported civic issue types.\n"
         "5. You can call describe_severity(level) to explain what a severity level means.\n"
         "6. If the tool returns an error, explain the problem clearly.\n\n"
-        "Always be concise. Do not add commentary beyond the classification result."
+        "Always be concise. Do not add commentary beyond the classification result.\n\n"
+        "IMPORTANT: You are part of a SequentialAgent. If the user asks for a task outside "
+        "your domain (e.g. reporting campaigns, verifying fixes, drafting emails), DO NOT "
+        "apologise or explain. Just ignore it; another agent in the chain will handle it."
     ),
     tools=[analyze_photo, mcp_toolset],
 )

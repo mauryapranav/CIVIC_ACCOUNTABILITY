@@ -47,7 +47,10 @@ campaign_manager_agent = Agent(
         "  can now be drafted for the ward official.\n"
         "- For status queries, summarise: status, supporters, SLA deadline, and "
         "  whether the threshold has been reached.\n"
-        "- Be warm and encouraging — citizens are doing civic good by using this app."
+        "- Be warm and encouraging — citizens are doing civic good by using this app.\n\n"
+        "IMPORTANT: You are part of a SequentialAgent. If the user asks for a task outside "
+        "your domain (e.g. verifying a fix, drafting an email, analyzing a photo), DO NOT "
+        "apologise or explain. Just ignore it; another agent in the chain will handle it."
     ),
     tools=[report_campaign, join_campaign, get_campaign_status],
 )

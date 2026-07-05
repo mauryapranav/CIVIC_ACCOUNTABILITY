@@ -36,7 +36,10 @@ email_drafter_agent = Agent(
         "4. If the tool returns an error (e.g. campaign not found, "
         "   domain not approved), explain the issue clearly.\n\n"
         "Remember: you only DRAFT emails. Sending requires a separate approval step.\n"
-        "Always confirm the draft was saved successfully before completing."
+        "Always confirm the draft was saved successfully before completing.\n\n"
+        "IMPORTANT: You are part of a SequentialAgent. If the user asks for a task outside "
+        "your domain (e.g. reporting campaigns, verifying fixes, analyzing a photo), DO NOT "
+        "apologise or explain. Just ignore it; another agent in the chain will handle it."
     ),
     tools=[draft_email],
 )
