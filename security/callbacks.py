@@ -106,7 +106,7 @@ def _make_block_response(message: str) -> LlmResponse:
 # ─── Guard 1: Input Length ────────────────────────────────────────────────────
 
 def input_length_guard(
-    context: Context,
+    callback_context: Context,
     llm_request: LlmRequest,
 ) -> Optional[LlmResponse]:
     """Block inputs that exceed the maximum allowed character count.
@@ -120,7 +120,7 @@ def input_length_guard(
             "input_blocked_too_long",
             "security_callback",
             {
-                "agent": getattr(context, "agent_name", "unknown"),
+                "agent": getattr(callback_context, "agent_name", "unknown"),
                 "input_length": len(text),
                 "limit": MAX_INPUT_CHARS,
             },
@@ -135,7 +135,7 @@ def input_length_guard(
 # ─── Guard 2: PII Redaction ───────────────────────────────────────────────────
 
 def pii_redaction(
-    context: Context,
+    callback_context: Context,
     llm_request: LlmRequest,
 ) -> Optional[LlmResponse]:
     """Redact PII (phone numbers, Aadhaar, email addresses) before the model sees them.
@@ -158,7 +158,7 @@ def pii_redaction(
             "pii_redacted",
             "security_callback",
             {
-                "agent": getattr(context, "agent_name", "unknown"),
+                "agent": getattr(callback_context, "agent_name", "unknown"),
                 "redactions": redaction_count,
             },
         )
@@ -170,7 +170,7 @@ def pii_redaction(
 # ─── Guard 3: Injection / XSS Sanitizer ──────────────────────────────────────
 
 def input_sanitizer(
-    context: Context,
+    callback_context: Context,
     llm_request: LlmRequest,
 ) -> Optional[LlmResponse]:
     """Detect and block prompt injection, script injection, and jailbreak attempts.
@@ -186,7 +186,7 @@ def input_sanitizer(
                 "injection_attempt_blocked",
                 "security_callback",
                 {
-                    "agent": getattr(context, "agent_name", "unknown"),
+                    "agent": getattr(callback_context, "agent_name", "unknown"),
                     "pattern": pattern.pattern,
                 },
             )
