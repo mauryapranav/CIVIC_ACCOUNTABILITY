@@ -50,14 +50,17 @@ from sub_agents.photo_analyzer import photo_analyzer_agent
 from sub_agents.email_drafter import email_drafter_agent
 from sub_agents.verifier import verifier_agent
 from security.callbacks import input_length_guard, pii_redaction, input_sanitizer
+from security.filters import filter_chatter
 
 # ─── Attach security callbacks to every sub-agent ────────────────────────────
-# ADK 2.x: before_model_callback receives (CallbackContext, LlmRequest)
+# ADK 2.x: before_model_callback receives (Context, LlmRequest)
+# ADK 2.x: after_model_callback receives (Context, LlmResponse)
 
 _security_callbacks = [input_length_guard, pii_redaction, input_sanitizer]
 
 for _agent in [campaign_manager_agent, photo_analyzer_agent, email_drafter_agent, verifier_agent]:
     _agent.before_model_callback = _security_callbacks
+    _agent.after_model_callback = [filter_chatter]
 
 # ─── Parent Orchestrator ──────────────────────────────────────────────────────
 

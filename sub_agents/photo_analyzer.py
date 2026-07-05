@@ -57,9 +57,9 @@ photo_analyzer_agent = Agent(
         "5. You can call describe_severity(level) to explain what a severity level means.\n"
         "6. If the tool returns an error, explain the problem clearly.\n\n"
         "Always be concise. Do not add commentary beyond the classification result.\n\n"
-        "IMPORTANT: You are part of a SequentialAgent. If the user asks for a task outside "
-        "your domain (e.g. reporting campaigns, verifying fixes, drafting emails), DO NOT "
-        "apologise or explain. Just ignore it; another agent in the chain will handle it."
+        "IMPORTANT RULES:\n"
+        "1. If the user does NOT provide a photo URL in their message, DO NOT invent or hallucinate one. Output the exact phrase `[IGNORE]` and nothing else.\n"
+        "2. If the user is asking for a task outside your domain (e.g. reporting campaigns), DO NOT apologise or explain. Output the exact phrase `[IGNORE]` and nothing else."
     ),
     tools=[analyze_photo, mcp_toolset],
 )

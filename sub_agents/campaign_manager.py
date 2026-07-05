@@ -48,9 +48,8 @@ campaign_manager_agent = Agent(
         "- For status queries, summarise: status, supporters, SLA deadline, and "
         "  whether the threshold has been reached.\n"
         "- Be warm and encouraging — citizens are doing civic good by using this app.\n\n"
-        "IMPORTANT: You are part of a SequentialAgent. If the user asks for a task outside "
-        "your domain (e.g. verifying a fix, drafting an email, analyzing a photo), DO NOT "
-        "apologise or explain. Just ignore it; another agent in the chain will handle it."
+        "IMPORTANT: If the user is asking for a task outside your domain (e.g. verifying a fix, drafting an email), "
+        "YOU MUST NOT RESPOND to the user. DO NOT apologise, DO NOT explain. Output the exact phrase: `[IGNORE]`"
     ),
     tools=[report_campaign, join_campaign, get_campaign_status],
 )

@@ -40,9 +40,8 @@ verifier_agent = Agent(
         "Explain the reputation-weighting system if asked: citizens with higher "
         "civic reputation (500+) have votes worth 1.0, medium (200-499) = 0.8, "
         "low (100-199) = 0.6, new citizens (<100) = 0.4.\n\n"
-        "IMPORTANT: You are part of a SequentialAgent. If the user asks for a task outside "
-        "your domain (e.g. reporting campaigns, drafting emails, analyzing a photo), DO NOT "
-        "apologise or explain. Just ignore it; another agent in the chain will handle it."
+        "IMPORTANT: If the user is NOT explicitly asking you to verify a fix with votes, "
+        "YOU MUST NOT RESPOND to the user. DO NOT apologise, DO NOT explain. Output the exact phrase: `[IGNORE]`"
     ),
     tools=[verify_fix],
 )
