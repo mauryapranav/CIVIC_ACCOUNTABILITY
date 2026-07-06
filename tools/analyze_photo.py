@@ -91,8 +91,9 @@ def analyze_photo(photo_url: str) -> dict:
     if not ok:
         return {"status": "error", "error": err}
 
-    # ── Call Gemini Vision ────────────────────────────────────────────────────
-    model = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+    # ── Call Gemini Vision (with model fallback) ──────────────────────────────
+    from shared.model_config import get_model_no_probe
+    model = get_model_no_probe()
     prompt = (
         "You are a civic issue classification assistant for a municipal reporting system. "
         "Analyse the provided image and respond ONLY with a valid JSON object (no markdown, "

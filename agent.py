@@ -50,7 +50,7 @@ from sub_agents.photo_analyzer import photo_analyzer_agent
 from sub_agents.email_drafter import email_drafter_agent
 from sub_agents.verifier import verifier_agent
 from security.callbacks import input_length_guard, pii_redaction, input_sanitizer
-from security.filters import filter_chatter
+from security.filters import filter_chatter, create_router_guard
 
 # ─── Attach security callbacks to every sub-agent ────────────────────────────
 # ADK 2.x: before_model_callback receives (Context, LlmRequest)
@@ -58,8 +58,12 @@ from security.filters import filter_chatter
 
 _security_callbacks = [input_length_guard, pii_redaction, input_sanitizer]
 
+campaign_manager_agent.before_model_callback = _security_callbacks + [create_router_guard(["report", "join", "status", "campaign", "aadhaar", "garbage", "pothole", "road", "street", "leak", "drain", "issue", "problem", "sidewalk"])]
+photo_analyzer_agent.before_model_callback = _security_callbacks + [create_router_guard(["photo", "image", "http", "url", ".jpg", ".png"])]
+email_drafter_agent.before_model_callback = _security_callbacks + [create_router_guard(["draft", "email", "escalat"])]
+verifier_agent.before_model_callback = _security_callbacks + [create_router_guard(["verify", "vote", "fix", "approve", "reject"])]
+
 for _agent in [campaign_manager_agent, photo_analyzer_agent, email_drafter_agent, verifier_agent]:
-    _agent.before_model_callback = _security_callbacks
     _agent.after_model_callback = [filter_chatter]
 
 # ─── Parent Orchestrator ──────────────────────────────────────────────────────

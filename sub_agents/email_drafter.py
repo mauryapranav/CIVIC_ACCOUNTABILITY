@@ -12,12 +12,13 @@ from google.adk.agents import Agent
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from tools.draft_email import draft_email
+from shared.model_config import get_model_no_probe
 
 # ─── Agent Definition ─────────────────────────────────────────────────────────
 
 email_drafter_agent = Agent(
     name="email_drafter",
-    model=os.environ.get("GEMINI_MODEL", "gemini-2.0-flash"),
+    model=get_model_no_probe(),
     description=(
         "Drafts professional escalation emails to municipal officials "
         "for civic campaigns that have reached the citizen threshold. "

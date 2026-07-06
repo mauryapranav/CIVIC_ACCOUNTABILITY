@@ -13,12 +13,13 @@ from google.adk.agents import Agent
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from tools.verify_fix import verify_fix
+from shared.model_config import get_model_no_probe
 
 # ─── Agent Definition ─────────────────────────────────────────────────────────
 
 verifier_agent = Agent(
     name="verifier",
-    model=os.environ.get("GEMINI_MODEL", "gemini-2.0-flash"),
+    model=get_model_no_probe(),
     description=(
         "Processes citizen verification votes to determine whether a reported "
         "civic issue has truly been resolved. Uses reputation-weighted voting "

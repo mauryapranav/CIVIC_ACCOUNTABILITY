@@ -18,12 +18,13 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from tools.report_campaign import report_campaign
 from tools.join_campaign import join_campaign
 from tools.get_campaign_status import get_campaign_status
+from shared.model_config import get_model_no_probe
 
 # ─── Agent Definition ─────────────────────────────────────────────────────────
 
 campaign_manager_agent = Agent(
     name="campaign_manager",
-    model=os.environ.get("GEMINI_MODEL", "gemini-2.0-flash"),
+    model=get_model_no_probe(),
     description=(
         "Manages the citizen-side civic campaign lifecycle: "
         "reporting new issues, joining existing campaigns for collective action, "

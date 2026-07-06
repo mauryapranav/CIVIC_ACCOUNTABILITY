@@ -13,6 +13,7 @@ from google.adk.tools.mcp_tool.mcp_toolset import MCPToolset, StdioConnectionPar
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from tools.analyze_photo import analyze_photo
+from shared.model_config import get_model_no_probe
 
 # ─── MCP Toolset (photo processing server) ────────────────────────────────────
 # The MCP server runs as a subprocess when this agent is invoked.
@@ -34,7 +35,7 @@ mcp_toolset = MCPToolset(
 
 photo_analyzer_agent = Agent(
     name="photo_analyzer",
-    model=os.environ.get("GEMINI_MODEL", "gemini-2.0-flash"),
+    model=get_model_no_probe(),
     description=(
         "Analyses civic issue photos submitted by citizens. "
         "Classifies the issue type, severity (1-5), and generates "
