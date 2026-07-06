@@ -40,14 +40,22 @@ def create_router_guard(keywords: list[str]):
     ) -> Optional[LlmResponse]:
         text = ""
         if getattr(llm_request, "contents", None):
-            # Find the most recent USER message in the context
-            user_contents = [c for c in llm_request.contents if getattr(c, "role", "") == "user"]
-            if user_contents:
-                last_user_content = user_contents[-1]
-                if getattr(last_user_content, "parts", None):
-                    for part in last_user_content.parts:
-                        if hasattr(part, "text") and part.text:
-                            text += part.text.lower()
+            # Find the most recent USER message that contains actual text (skip tool responses)
+            for c in reversed(llm_request.contents):
+                if getattr(c, "role", "") == "user":
+                    is_tool_response = False
+                    if getattr(c, "parts", None):
+                        for part in c.parts:
+                            if hasattr(part, "function_response") and getattr(part, "function_response", None) is not None:
+                                is_tool_response = True
+                                break
+                    if not is_tool_response:
+                        if getattr(c, "parts", None):
+                            for part in c.parts:
+                                if hasattr(part, "text") and part.text:
+                                    text += part.text.lower()
+                        break
+        
         
         # If no keywords are provided, always allow
         if not keywords:

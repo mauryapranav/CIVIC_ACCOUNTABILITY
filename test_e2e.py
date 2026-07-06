@@ -64,28 +64,28 @@ run_scenario(1, "Report a New Campaign",
     "Use the report_campaign tool to create a new campaign. Title: Large Pothole on SV Road. "
     "Address: SV Road near Andheri Station Mumbai. issue_type: pothole. ward_id: W073. severity: 4.",
     app_name, "u1", s["id"])
-time.sleep(2)  # respect rate limits
+time.sleep(30)  # respect rate limits
 
 # ── Scenario 2: Join Campaign ──
 s = requests.post(f"{BASE}/apps/{app_name}/users/u2/sessions", json={}).json()
 run_scenario(2, "Join Existing Campaign",
     "Use join_campaign to join campaign CAMP001 with citizen_id CITIZEN-42.",
     app_name, "u2", s["id"])
-time.sleep(2)
+time.sleep(30)
 
 # ── Scenario 3: Campaign Status ──
 s = requests.post(f"{BASE}/apps/{app_name}/users/u3/sessions", json={}).json()
 run_scenario(3, "Query Campaign Status",
     "Use get_campaign_status for campaign_id CAMP002.",
     app_name, "u3", s["id"])
-time.sleep(2)
+time.sleep(30)
 
 # ── Scenario 4: Draft Email ──
 s = requests.post(f"{BASE}/apps/{app_name}/users/u4/sessions", json={}).json()
 run_scenario(4, "Draft Escalation Email (Threshold Met)",
     "Use draft_email to draft an escalation email for campaign_id CAMP001.",
     app_name, "u4", s["id"])
-time.sleep(2)
+time.sleep(30)
 
 # ── Scenario 5: Verify Fix ──
 s = requests.post(f"{BASE}/apps/{app_name}/users/u5/sessions", json={}).json()
@@ -97,7 +97,7 @@ votes_json = json.dumps([
 run_scenario(5, "Citizen Verification (Weighted Votes)",
     f"Use verify_fix for campaign_id CAMP003 with votes: {votes_json}",
     app_name, "u5", s["id"])
-time.sleep(2)
+time.sleep(30)
 
 # ── Scenario 6: PII Redaction ──
 s = requests.post(f"{BASE}/apps/{app_name}/users/u6/sessions", json={}).json()

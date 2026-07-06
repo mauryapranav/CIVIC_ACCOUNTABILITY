@@ -59,15 +59,23 @@ _INJECTION_PATTERNS: list[re.Pattern] = [
 
 
 def _extract_text_from_request(llm_request: LlmRequest) -> str:
-    """Best-effort extraction of user-facing text from the LLM request."""
+    """Best-effort extraction of user-facing text from the NEWEST user request."""
     try:
         contents = llm_request.contents or []
-        parts = []
-        for content in contents:
-            for part in (content.parts or []):
-                if hasattr(part, "text") and part.text:
-                    parts.append(part.text)
-        return "\n".join(parts)
+        for content in reversed(contents):
+            if getattr(content, "role", "") == "user":
+                is_tool_response = False
+                parts = []
+                for part in (content.parts or []):
+                    if hasattr(part, "function_response") and getattr(part, "function_response", None) is not None:
+                        is_tool_response = True
+                        break
+                    if hasattr(part, "text") and part.text:
+                        parts.append(part.text)
+                
+                if not is_tool_response:
+                    return "\n".join(parts)
+        return ""
     except Exception:
         return ""
 
@@ -81,10 +89,18 @@ def _mutate_text_in_request(llm_request: LlmRequest, new_text: str) -> None:
     try:
         contents = llm_request.contents or []
         for content in reversed(contents):
-            for part in reversed(content.parts or []):
-                if hasattr(part, "text") and part.text:
-                    part.text = new_text
-                    return
+            if getattr(content, "role", "") == "user":
+                is_tool_response = False
+                for part in (content.parts or []):
+                    if hasattr(part, "function_response") and getattr(part, "function_response", None) is not None:
+                        is_tool_response = True
+                        break
+                
+                if not is_tool_response:
+                    for part in reversed(content.parts or []):
+                        if hasattr(part, "text") and part.text:
+                            part.text = new_text
+                            return
     except Exception:
         pass
 

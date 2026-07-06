@@ -290,12 +290,6 @@ The `eval/evalset.json` contains 9 test cases covering all tools and the PII red
 
 ---
 
-## 🗺️ Origin Story
-
-WardWatch started as a full-stack civic platform (Flutter + FastAPI + Angular + Firebase) built for the [Vibe2Ship hackathon](https://github.com/mauryapranav/wardwatch). For the Kaggle ADK Capstone, the entire stack was stripped down to the AI agent layer and rebuilt using Google ADK — keeping the civic domain expertise but replacing the backend with proper multi-agent orchestration, MCP servers, and security callbacks.
-
----
-
 ## 📝 Environment Variables
 
 | Variable | Required | Description |

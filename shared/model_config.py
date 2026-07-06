@@ -22,6 +22,8 @@ _FALLBACK_MODELS = [
     "gemini-2.5-flash-lite",
     "gemini-2.5-flash",
     "gemini-3.5-flash",
+    "gemini-1.5-flash",
+    "gemini-1.5-pro",
 ]
 
 _cached_model: str | None = None
@@ -88,7 +90,7 @@ def get_model_no_probe() -> str:
     env_model = os.environ.get("GEMINI_MODEL", "").strip()
     if env_model:
         # Reject known-dead models
-        dead_models = {"gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"}
+        dead_models = {"gemini-2.0-flash"}
         if env_model in dead_models:
             logger.warning(f"GEMINI_MODEL={env_model} is deprecated, using gemini-2.5-flash-lite")
             return "gemini-2.5-flash-lite"
